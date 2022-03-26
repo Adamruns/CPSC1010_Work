@@ -1,0 +1,107 @@
+/* Insert a comment header here with:
+   Adam Smith
+   Section 4
+   Names of students you collaborated with
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int main (void){
+    // declare variables - stores data in a name
+    int wages; 
+    int interest;
+    int unemployment;
+    int status;
+    int taxesWitheld;
+    int AGI;
+    int deduction;
+    int taxableIncome;
+    char colon = ':';
+    double fedTax;
+    int taxDue;
+    scanf("%d %d %d %d %d", &wages, &interest, &unemployment, &status, &taxesWitheld);
+    
+    AGI = wages + interest + unemployment;
+    
+    if (AGI <= 120000 && (status == 1 || status == 2)){
+       char agiString[] = "AGI";
+       printf("%-15s%c%7d\n", agiString, colon, AGI);
+       
+       if (status == 1){
+          deduction = 12000;
+       }
+       else if (status == 2){
+          deduction = 24000;
+       }
+       char deductionString[] = "Deduction";
+       printf("%-15s%c%7d\n", deductionString, colon, deduction);
+       
+       taxableIncome = AGI - deduction;
+       
+       if (taxableIncome < 0){
+          taxableIncome = 0;
+       }
+       char taxableIncomeString[] = "Taxable Income";
+       printf("%-15s%c%7d\n", taxableIncomeString, colon, taxableIncome);
+       
+       // Single rates for fed tax
+       
+       if (status == 1){
+          if (taxableIncome <= 10000){
+             fedTax = round(taxableIncome * 0.1);
+          }
+          else if (10001 <= taxableIncome && taxableIncome <= 40000){
+             taxableIncome = taxableIncome - 10000;
+             fedTax = round(1000 + (taxableIncome * 0.12));
+          }
+          else if (40001 <= taxableIncome && taxableIncome <= 85000){
+             taxableIncome = taxableIncome - 40000;
+             fedTax = round(4600 + (taxableIncome * 0.22));
+          }
+          else if (85001 <= taxableIncome) {
+             taxableIncome = taxableIncome - 85000;
+             fedTax = round(14500 + (taxableIncome * 0.24));
+          }
+       }
+       
+       // Tax rates for married 
+       else if (status == 2){
+          if (taxableIncome <= 20000){
+             fedTax = taxableIncome * 0.1;
+          }
+          else if (20001 <= taxableIncome && taxableIncome <= 80000){
+             taxableIncome = taxableIncome - 20000;
+             fedTax = round(2000 + (taxableIncome * 0.12));
+          }
+          else if (80001 <= taxableIncome){
+             taxableIncome = taxableIncome - 80000;
+             fedTax = round(9200 + (taxableIncome * 0.22));
+          }
+       }
+       char fedTaxString[] = "Federal Tax";
+       printf("%-15s%c%7.0lf\n", fedTaxString, colon, fedTax);
+       
+       taxDue = fedTax - taxesWitheld;
+       char taxDueString[] = "Tax Owed";
+       if (taxDue >= 0){
+          char taxDueString[] = "Tax Owed";
+          printf("%-15s%c%7d\n", taxDueString, colon, taxDue);
+       }
+       else{
+          taxDue = abs(taxDue);
+          char taxDueString[] = "Tax Refund";
+          printf("%-15s%c%7d\n", taxDueString, colon, taxDue);
+       }
+    }
+    else if (AGI>120000){
+       
+       printf("AGI: %d", AGI);
+       printf("\nError: Income too high to use this form.\n");
+    }
+    else if (status != 1 && status != 2){
+       printf("Error: Must input status 1 (single) or 2 (married).\n");
+    }
+    
+    return 0;
+}
